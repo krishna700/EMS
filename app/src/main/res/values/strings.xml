@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">EMS</string>
-    <string name="hintOne">Name</string>
-    <string name="hintTwo">Designation</string>
+    <string name="hintOne">Your number, WhatsApp preferably </string>
+    <string name="hintTwo">Your Designation</string>
     
     
     <string name="home_option_one">Employees List</string>
@@ -10,6 +10,15 @@
     <string name="home_option_four">Chat with dept</string>
     <string name="home_option_five">Notice</string>
     <string name="home_option_six">Approve leave</string>
+
+    <array name="departments">
+        <item name="hr">HR</item>
+        <item name="productDevelopment">Development</item>
+        <item name="it">IT services</item>
+        <item name="marketing">Sales</item>
+        <item name="finance">Finance</item>
+        <item name="quality">QA</item>
+    </array>
 
 
 

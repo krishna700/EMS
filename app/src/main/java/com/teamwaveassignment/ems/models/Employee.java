@@ -1,18 +1,28 @@
 package com.teamwaveassignment.ems.models;
 
 public class Employee {
-   private String name,email,phone,designation,department;
+   private String id,name,email,phone,designation,department;
    private int leaves;
 
     public Employee(){}
 
-    public Employee(String name,String email,String phone,String department,String designation,int leaves)
+    public Employee(String id,String name,String email,String phone,String department,String designation,int leaves)
     {
+        this.id=id;
         this.name=name;
         this.email=email;
         this.designation=designation;
         this.phone=phone;
         this.department=department;
+        this.leaves=leaves;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
