@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teamwaveassignment.ems">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:fullBackupContent="false"
+        android:name=".EMS"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
+
+        </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:noHistory="true">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.ApplyLeave">
+
+        </activity>
+        <activity
+            android:noHistory="true"
+            android:name=".activities.UserData">
+
+        </activity>
+
     </application>
 
 </manifest>

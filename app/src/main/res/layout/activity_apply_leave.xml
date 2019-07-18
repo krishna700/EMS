@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ru.slybeaver.slycalendarview.SlyCalendarView
+        android:id="@+id/slyCalendarView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:backgroundColor="#F7F2F2"
+        app:headerColor="#00E5FF"
+        app:firstMonday="true"
+        app:selectedColor="#0000ff"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+    </LinearLayout>
+</LinearLayout>

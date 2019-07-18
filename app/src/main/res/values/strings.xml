@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">EMS</string>
+    <string name="hintOne">Name</string>
+    <string name="hintTwo">Designation</string>
+    
+    
+    <string name="home_option_one">Employees List</string>
+    <string name="home_option_two">Request leave</string>
+    <string name="home_option_three">Mark Attendance</string>
+    <string name="home_option_four">Chat with dept</string>
+    <string name="home_option_five">Notice</string>
+    <string name="home_option_six">Approve leave</string>
+
+
+
+
+
 </resources>
