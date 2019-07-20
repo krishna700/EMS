@@ -10,7 +10,9 @@
     <color name="mediumGrey">#E5E9E5</color>
     <color name="lightGrey">#CFC9C9</color>
 
-    <color name="green">#28AF2D</color>
+    <color name="green">#16811B</color>
+    <color name="darkGreen">#16811B</color>
+    <color name="lightGreen">#337533</color>
     <color name="textBlack">#f000</color>
     <color name="textGrey">#444242</color>
 </resources>

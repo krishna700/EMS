@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:text="@string/leaveHistory"
+        android:layout_marginStart="@dimen/text_20sp"
+        android:gravity="start"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:layout_gravity="start"
+        android:textSize="25sp"
+        android:drawableStart="@drawable/notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_margin="5dp"
+        android:background="@color/textBlack"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:cardBackgroundColor="@color/mediumGrey"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/startDate"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/endDate"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/appliedOn"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/status"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="Pending"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <View
+                android:background="@color/textBlack"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:cardBackgroundColor="@color/mediumGrey"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/startDate"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/endDate"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/appliedOn"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="22-09-1997"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/status"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textBlack"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="115dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="Pending"
+                    android:layout_marginStart="@dimen/text_20sp"
+                    android:gravity="start"
+                    android:textColor="@color/textGrey"
+                    android:textStyle="bold"
+                    android:layout_gravity="start"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            </LinearLayout>
+
+            <View
+                android:background="@color/textBlack"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

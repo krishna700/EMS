@@ -265,7 +265,7 @@ public class UserData extends AppCompatActivity {
     @Override public void onStop()
     {
         super.onStop();
-        //if (viewDialog != null) { viewDialog.hideDialog(); viewDialog = null; }
+        if (viewDialog != null) { viewDialog.hideDialog(); viewDialog = null; }
     }
 
 

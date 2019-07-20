@@ -1,113 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/employee_list"
+        android:backgroundTint="@color/colorAccent"
         android:layout_width="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:elevation="50dp"
-        app:cardCornerRadius="10dp"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="130dp">
-            <com.mikhaellopez.circularimageview.CircularImageView
-                android:src="@drawable/me"
-                app:civ_shadow_gravity="center"
-                app:civ_border_color="@color/colorAccent"
-                app:civ_border_width="2dp"
-                app:civ_shadow="true"
-                app:civ_shadow_radius="10"
-                app:civ_shadow_color="@color/colorPrimary"
-                android:layout_margin="10dp"
-                android:layout_width="125dp"
-                android:layout_height="105dp" />
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/name"
-                    android:textSize="18sp"
-
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="@color/textBlack"
-                    android:text="Krishna gopal pal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/designation"
-                    android:textSize="12sp"
-                    android:text="Software engineer"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/textGrey"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/department"
-                    android:textSize="12sp"
-                    android:text="QA"
-                    android:fontFamily="sans-serif"
-                    android:textColor="@color/textGrey"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-
-                        android:id="@+id/call"
-                        android:textSize="15sp"
-                        android:text="Call"
-                        android:drawableTop="@drawable/call"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/colorAccent"
-                        android:layout_marginTop="5dp"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/email"
-                        android:textSize="15sp"
-                        android:text="Email"
-                        android:layout_margin="5dp"
-                        android:drawableTop="@drawable/email"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/colorAccent"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="70dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:padding="1dp"
-                        android:id="@+id/whatsApp"
-                        android:textSize="13sp"
-                        android:text="WhatsApp"
-                        android:drawableTop="@drawable/whatsapp"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/colorAccent"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="70dp"
-                        android:gravity="center"
-                        android:layout_height="wrap_content" />
-
-
-                </LinearLayout>
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</LinearLayout>
+        android:layout_height="781dp" />
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:layout_gravity="bottom|end"
+    android:layout_margin="50dp"
+    android:id="@+id/filter"
+    android:src="@drawable/filter"
+    app:backgroundTint="@color/colorBackground"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
