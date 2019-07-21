@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -56,16 +57,12 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(ems.getName());
         designation.setText(ems.getDesignation());
         department.setText(ems.getDepartment());
-        if(!ems.getIsHr()) {
-            approveLeave.setWidth(0);
-            approveLeave.setHeight(0);
-            approveLeave.setVisibility(View.INVISIBLE);
+        approveLeave.setVisibility(View.INVISIBLE);
+               if(ems.getIsHr()) {
+            approveLeave.setVisibility(View.VISIBLE);
 
         }
-        else
-            {
-                approveLeave.setVisibility(View.VISIBLE);
-            }
+
             dialogSheet = new DialogSheet(MainActivity.this)
                 .setTitle("Edit Profile")
                 .setColoredNavigationBar(true)
@@ -122,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(MainActivity.this,"GoodBye!!", Toast.LENGTH_SHORT).show();
                                         Intent intent=new Intent(MainActivity.this, LoginActivity.class);
                                         startActivity(intent);
+                                        Animatoo.animateSplit(MainActivity.this);
                                         finish();
                                     }
                                 });

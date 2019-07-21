@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     Intent loginIntent = new Intent(LoginActivity.this, UserData.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
-                    Animatoo.animateSlideUp(LoginActivity.this);
+                    Animatoo.animateFade(LoginActivity.this);
                     finish();
                 }
             }

@@ -13,7 +13,7 @@
     <string name="home_option_three">Logout</string>
     <string name="home_option_four">Edit Profile</string>
     <string name="home_option_five">Day-Off History</string>
-    <string name="home_option_six">Approve leave</string>
+    <string name="home_option_six">Approve Day-Off</string>
 
 
     <array name="departments">
@@ -42,11 +42,18 @@
     <string name="approve">Approved by RG
     </string>
 
+    <string name="to">to</string>
     <string name="leaveHistory">Day-Off History</string>
     <string name="pendingRequest">Pending Leave Request</string>
 
+    <string name="rejected">Rejected</string>
+    <string name="approved">Approved</string>
+    <string name="pending">Pending</string>
     <string name="appliedBy">Applied By:</string>
     <string name="reason">Reason of Leave</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+
 
 
 </resources>

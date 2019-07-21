@@ -2,6 +2,8 @@ package com.teamwaveassignment.ems.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,8 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.models.Leave;
@@ -53,7 +58,7 @@ public class ApplyLeave extends AppCompatActivity {
     String firstDateString,endDateString,timeStamp,status,
             approvedBy="This request is yet to be approved"
             ,reasonString;
-    int balance;
+    int balance,noOfDaysInt;
 
 
     FirebaseFirestore db;
@@ -84,8 +89,9 @@ public class ApplyLeave extends AppCompatActivity {
                     final int random = new Random().nextInt(100) + 10;
                     final int randomOne = new Random().nextInt(10000) + 100;
                     String id=""+random+randomOne;
+                    int status=0;
                     Leave leave=new Leave(id,approvedBy,reasonString,endDateString,firstDateString
-                    ,date,ems.getName(),ems.getEmail(),ems.getPhone(),"Pending",ems.getLeaves());
+                    ,date,ems.getName(),ems.getDesignation(),ems.getDepartment(),ems.getEmail(),ems.getPhone(),noOfDaysInt,status);
                     db.collection("leaves").document(id).set(leave);
 
                     db.collection("employees").document(ems.getEmail()).collection("myLeaves")
@@ -172,6 +178,7 @@ public class ApplyLeave extends AppCompatActivity {
                     {
                         leaveCount.setText(""+numberOfDays);
                        reason.setVisibility(View.VISIBLE);
+                       noOfDaysInt=numberOfDays;
                        applyLayout.setVisibility(View.VISIBLE);
                        noOfDays.setVisibility(View.VISIBLE);
                     }
@@ -180,7 +187,7 @@ public class ApplyLeave extends AppCompatActivity {
                         reason.setVisibility(View.INVISIBLE);
                         leaveCount.setText("");
                         applyLayout.setVisibility(View.INVISIBLE);
-                        noOfDays.setVisibility(View.VISIBLE);
+                        noOfDays.setVisibility(View.INVISIBLE);
                         Toasty.warning(ApplyLeave.this, "Exceeds day-off balance.", Toast.LENGTH_SHORT, true).show();
                     }
                 }
@@ -206,6 +213,19 @@ public class ApplyLeave extends AppCompatActivity {
                         .show(getSupportFragmentManager(), "TAG_SLYCALENDAR");
             }
         });
+
+
+    }
+
+    private void sendNotification() {
+        String topic = "highScores";
+
+// See documentation on defining a message payload.
+
+
+// Send a message to the devices subscribed to the provided topic.
+       // String response = FirebaseMessaging.getInstance().send("");
+
 
 
     }

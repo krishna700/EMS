@@ -108,7 +108,7 @@ public class EmployeeList extends AppCompatActivity {
                                       });
 
                 powerMenu = new PowerMenu.Builder(EmployeeList.this)
-                        .addItem(new PowerMenuItem("Hr", false))
+                        .addItem(new PowerMenuItem("HR", false))
                         .setAnimation(MenuAnimation.ELASTIC_TOP_RIGHT)
                         .setShowBackground(true)
                         .setMenuRadius(10f)
@@ -157,8 +157,8 @@ public class EmployeeList extends AppCompatActivity {
 
                 if(model.getEmail().equals(ems.getEmail()))
                 {
-                    //viewHolder.view.setVisibility(View.INVISIBLE);
-                    //viewHolder.view.setLayoutParams(new RecyclerView.LayoutParams(0,0));
+                    viewHolder.itemView.setVisibility(View.INVISIBLE);
+                    viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
                 }
 
 
@@ -255,12 +255,11 @@ public class EmployeeList extends AppCompatActivity {
 
       @BindView(R.id.profilePhoto)
       CircularImageView profilePhoto;
-      public View view;
 
-      private EmployeeHolder(View view)
+      private EmployeeHolder(View itemView)
       {
-          super(view);
-          ButterKnife.bind(this,view);
+          super(itemView);
+          ButterKnife.bind(this,itemView);
       }
   }
 

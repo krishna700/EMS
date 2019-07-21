@@ -1,12 +1,13 @@
 package com.teamwaveassignment.ems.models;
 
 public class Leave {
-  private   String ID,approvedBy,reason,endDate,startDate,timeStamp,email,name,phone,status;
-  private   int balanceLeave;
+  private   String ID,approvedBy,reason,endDate,startDate,timeStamp,designation,
+    department,email,name,phone;
+  private   int noOfDays,status;
     public Leave(){}
 
     public Leave(String ID,String approvedBy,String reason,String endDate,String startDate,
-    String timeStamp,String name,String email,String phone, String status,int balanceLeave )
+    String timeStamp,String name,String designation,String department,String email,String phone,int noOfDays,int status )
     {
         this.ID=ID;
         this.approvedBy=approvedBy;
@@ -16,9 +17,37 @@ public class Leave {
         this.timeStamp=timeStamp;
         this.email=email;
         this.phone=phone;
-        this.status=status;
         this.name=name;
-        this.balanceLeave=balanceLeave;
+        this.noOfDays=noOfDays;
+        this.designation=designation;
+        this.department=department;
+        this.status=status;
+
+
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     public String getID() {
@@ -57,9 +86,7 @@ public class Leave {
         return startDate;
     }
 
-    public String getStatus() {
-        return status;
-    }
+
 
     public void setEmail(String email) {
         this.email = email;
@@ -97,15 +124,13 @@ public class Leave {
         this.startDate = startDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+
+
+    public int getNoOfDays() {
+        return noOfDays;
     }
 
-    public int getBalanceLeave() {
-        return balanceLeave;
-    }
-
-    public void setBalanceLeave(int balanceLeave) {
-        this.balanceLeave = balanceLeave;
+    public void setNoOfDays(int noOfDays) {
+        this.noOfDays = noOfDays;
     }
 }

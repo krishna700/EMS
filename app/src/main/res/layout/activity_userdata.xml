@@ -122,9 +122,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
-            android:text="Save"
+            android:text="@string/save"
             android:textStyle="bold"
-            android:textColor="@color/textGrey"
+            android:textColor="@color/colorBackground"
             android:textSize="22sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

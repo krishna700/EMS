@@ -67,7 +67,7 @@ public class UserData extends AppCompatActivity {
 
     StringBuilder nameString;
     String name,email,phone,post,department;
-    boolean isHr;
+    boolean isHr=false;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -161,7 +161,7 @@ public class UserData extends AppCompatActivity {
         compoundButtonGroup.setOnButtonSelectedListener(new CompoundButtonGroup.OnButtonSelectedListener() {
             @Override
             public void onButtonSelected(int position, String value, boolean isChecked) {
-                if(position==0){isHr=true;}
+                if(value.equals("HR")){isHr=true;}
                 save.setVisibility(View.VISIBLE);
                 department=value;
 
@@ -198,7 +198,7 @@ public class UserData extends AppCompatActivity {
                                 Intent loginIntent = new Intent(UserData.this, MainActivity.class);
                                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(loginIntent);
-                                Animatoo.animateSlideUp(UserData.this);
+                                Animatoo.animateSwipeLeft(UserData.this);
                                 finish();
                             }
                         });
@@ -254,7 +254,7 @@ public class UserData extends AppCompatActivity {
                         Intent loginIntent = new Intent(UserData.this,MainActivity.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(loginIntent);
-                        Animatoo.animateSlideUp(UserData.this);
+                        Animatoo.animateInAndOut(UserData.this);
                         finish();
 
                     } else {

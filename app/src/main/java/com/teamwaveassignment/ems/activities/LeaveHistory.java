@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,8 +98,29 @@ public class LeaveHistory extends AppCompatActivity {
                 viewHolder.reason.setText(model.getReason());
                 viewHolder.startDate.setText(model.getStartDate());
                 viewHolder.endDate.setText(model.getEndDate());
-                viewHolder.status.setText(model.getStatus());
                 viewHolder.timeStamp.setText(model.getTimeStamp());
+                viewHolder.dayCount.setText(model.getNoOfDays()+" Days");
+                if(model.getStatus()==0)
+                {
+                    viewHolder.status.setText(getString(R.string.pending));
+                    viewHolder.status.setBackgroundColor(
+                            ContextCompat.getColor(ems,
+                                    R.color.colorAccent));
+                }
+                if(model.getStatus()==1)
+                {
+                    viewHolder.status.setText(getString(R.string.approved));
+                    viewHolder.status.setBackgroundColor(
+                            ContextCompat.getColor(ems,
+                                    R.color.green));
+                }
+                if(model.getStatus()==-1)
+                {
+                    viewHolder.status.setText(getString(R.string.rejected));
+                    viewHolder.status.setBackgroundColor(
+                            ContextCompat.getColor(ems,
+                                    R.color.red));
+                }
             }
 
         };
@@ -109,7 +131,7 @@ public class LeaveHistory extends AppCompatActivity {
     }
 
 
-    public class LeaveHolder extends RecyclerView.ViewHolder
+     class LeaveHolder extends RecyclerView.ViewHolder
     {
         @BindView(R.id.approvedBy)
         TextView approvedBy;
@@ -123,6 +145,8 @@ public class LeaveHistory extends AppCompatActivity {
         TextView timeStamp;
         @BindView(R.id.status)
         TextView status;
+        @BindView(R.id.noOfDays)
+        TextView dayCount;
 
         private LeaveHolder(View view)
         {
