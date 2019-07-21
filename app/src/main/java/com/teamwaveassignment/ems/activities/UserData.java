@@ -1,5 +1,6 @@
 package com.teamwaveassignment.ems.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,7 +67,7 @@ public class UserData extends AppCompatActivity {
 
     StringBuilder nameString;
     String name,email,phone,post,department;
-
+    boolean isHr;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     private FirebaseFirestore db;
@@ -74,6 +75,7 @@ public class UserData extends AppCompatActivity {
     final int RC_SIGN_IN=12;
     EMS ems;
     ViewDialog viewDialog;
+    Activity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -81,6 +83,7 @@ public class UserData extends AppCompatActivity {
         setContentView(R.layout.activity_userdata);
         getSupportActionBar().hide();
         ButterKnife.bind(this);
+        activity=this;
         viewDialog=new ViewDialog(this);
         viewDialog.showDialog();
         designation.setVisibility(View.INVISIBLE);
@@ -158,6 +161,7 @@ public class UserData extends AppCompatActivity {
         compoundButtonGroup.setOnButtonSelectedListener(new CompoundButtonGroup.OnButtonSelectedListener() {
             @Override
             public void onButtonSelected(int position, String value, boolean isChecked) {
+                if(position==0){isHr=true;}
                 save.setVisibility(View.VISIBLE);
                 department=value;
 
@@ -167,6 +171,8 @@ public class UserData extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(viewDialog ==null)
+                { viewDialog=new ViewDialog(activity);}
                 viewDialog.showDialog();
                 String name=currentUser.getDisplayName();
                 phone=number.getText().toString();
@@ -181,8 +187,9 @@ public class UserData extends AppCompatActivity {
                 ems.setPhone(phone);
                 ems.setLeaves(12);
                 ems.setEmail(email);
+           //     ems.setIsHr(isHr);
                 Employee employee=new
-                        Employee(id,name,email,phone,department,post,12);
+                        Employee(id,"",name,email,phone,department,post,12,isHr);
                 db.collection("employees").document(email).set(employee)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -205,9 +212,8 @@ public class UserData extends AppCompatActivity {
     private void newUser()
     {
 
-      //  viewDialog.hideDialog();
-        nameString=new StringBuilder("Hey ! ");
-       nameString.append(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+
+        nameString=new StringBuilder("Hey !  ");
         name=nameString.toString();
         typeWriterView.setDelay(100);
         typeWriterView.animateText(name);
@@ -244,6 +250,7 @@ public class UserData extends AppCompatActivity {
                         ems.setPhone(document.getString("phone"));
                         ems.setLeaves(document.getLong("leaves").intValue());
                         ems.setEmail(document.getString("email"));
+                        ems.setIsHr(document.getBoolean("isHr"));
                         Intent loginIntent = new Intent(UserData.this,MainActivity.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(loginIntent);
@@ -251,7 +258,7 @@ public class UserData extends AppCompatActivity {
                         finish();
 
                     } else {
-                       viewDialog.hideDialog();
+                        if (viewDialog != null) { viewDialog.hideDialog(); viewDialog = null; }
                        newUser();
 
                     }

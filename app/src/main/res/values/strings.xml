@@ -9,10 +9,10 @@
     
     
     <string name="home_option_one">Employees List</string>
-    <string name="home_option_two">Apply   leave</string>
+    <string name="home_option_two">Apply  Day-Off</string>
     <string name="home_option_three">Logout</string>
     <string name="home_option_four">Edit Profile</string>
-    <string name="home_option_five">Leave History</string>
+    <string name="home_option_five">Day-Off History</string>
     <string name="home_option_six">Approve leave</string>
 
 
@@ -31,17 +31,22 @@
     <string name="employee_list_option_three">WhatsApp</string>
 
     <string name="select_date_range">Select first and last date</string>
-    <string name="startDate">Start Date</string>
-    <string name="endDate">End Date</string>
-    <string name="stringDayOff">Day-Off Left: </string>
+    <string name="startDate">Start Date :</string>
+    <string name="endDate">End Date :</string>
+    <string name="stringDayOff">Day-Off Balance: </string>
+    <string name="noOfDays">Day-off Count: </string>
     <string name="dayOffReason">Please, state a suitable reason for the day-off.</string>
 
-    <string name="appliedOn">Applied On</string>
+    <string name="appliedOn">Applied On :</string>
     <string name="phone">Phone Number</string>
-    <string name="status">Status</string>
+    <string name="approve">Approved by RG
+    </string>
 
-    <string name="leaveHistory">Leave History</string>
+    <string name="leaveHistory">Day-Off History</string>
+    <string name="pendingRequest">Pending Leave Request</string>
 
+    <string name="appliedBy">Applied By:</string>
+    <string name="reason">Reason of Leave</string>
 
 
 </resources>

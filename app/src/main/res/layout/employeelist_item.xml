@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.armcha.elasticview.ElasticView android:id="@+id/imageElasticView"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="100dp"
-    app:cardElevation="400dp"
+    android:layout_height="150dp"
     app:cardBackgroundColor="#FAF4DE"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="50dp"
+    app:flexibility="5"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
-    app:cardCornerRadius="10dp"
-    android:layout_height="150dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+        android:layout_height="150dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="130dp">
@@ -113,3 +118,4 @@
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
+</io.armcha.elasticview.ElasticView>

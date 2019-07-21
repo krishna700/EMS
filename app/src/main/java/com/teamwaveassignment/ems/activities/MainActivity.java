@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,8 +56,17 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(ems.getName());
         designation.setText(ems.getDesignation());
         department.setText(ems.getDepartment());
+        if(!ems.getIsHr()) {
+            approveLeave.setWidth(0);
+            approveLeave.setHeight(0);
+            approveLeave.setVisibility(View.INVISIBLE);
 
-        dialogSheet = new DialogSheet(MainActivity.this)
+        }
+        else
+            {
+                approveLeave.setVisibility(View.VISIBLE);
+            }
+            dialogSheet = new DialogSheet(MainActivity.this)
                 .setTitle("Edit Profile")
                 .setColoredNavigationBar(true)
                 .setCancelable(true)
@@ -90,16 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
 
                         startActivity(new Intent(MainActivity.this, EmployeeList.class));
-               /* AuthUI.getInstance()
-                        .signOut(MainActivity.this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(MainActivity.this,"GoodBye!!", Toast.LENGTH_SHORT).show();
-                                Intent intent=new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });*/
+
 
                     }
                 });
@@ -123,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 });
+                    }
+                });
+
+                approveLeave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                     startActivity(new Intent(MainActivity.this,ApproveLeave.class));
                     }
                 });
 

@@ -1,12 +1,14 @@
 package com.teamwaveassignment.ems.models;
 
 public class Employee {
-   private String id,name,email,phone,designation,department;
+   private String id,name,email,phone,designation,department,photoUrl;
    private int leaves;
+   private boolean isHr;
+
 
     public Employee(){}
 
-    public Employee(String id,String name,String email,String phone,String department,String designation,int leaves)
+    public Employee(String id,String photoUrl,String name,String email,String phone,String department,String designation,int leaves,boolean isHr)
     {
         this.id=id;
         this.name=name;
@@ -15,6 +17,24 @@ public class Employee {
         this.phone=phone;
         this.department=department;
         this.leaves=leaves;
+        this.isHr=isHr;
+        this.photoUrl=photoUrl;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public void setIsHr(boolean hr) {
+        isHr = hr;
+    }
+
+    public boolean getIsHr() {
+        return isHr;
     }
 
     public void setId(String id) {
@@ -48,6 +68,8 @@ public class Employee {
     public String getDesignation() {
         return designation;
     }
+
+
 
     public void setName(String name) {
         this.name = name;

@@ -37,10 +37,11 @@ dependencies {
     implementation 'in.codeshuffle:typewriterview:1.1.0'
     implementation 'com.llollox.androidprojects:compoundbuttongroup:1.0.2'
     implementation 'com.github.skydoves:powermenu:2.0.8'
-    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
     implementation 'com.github.ishaan1995:ButtonProgressBar:1.0'
     implementation 'com.github.GrenderG:Toasty:1.4.0'
     implementation 'com.github.marcoscgdev:DialogSheet:2.0.6'
+    implementation 'com.github.medyo:state-views:0.2'
+    implementation 'com.github.armcha:ElasticView:0.2.0'
 
     implementation 'com.google.firebase:firebase-core:17.0.1'
     implementation 'com.firebaseui:firebase-ui-database:4.0.0'

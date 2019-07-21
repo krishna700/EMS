@@ -1,19 +1,63 @@
 package com.teamwaveassignment.ems;
 
 import android.app.Application;
+import android.graphics.Color;
+
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.firebase.FirebaseApp;
 
+import sakout.mehdi.StateViews.StateViewsBuilder;
+
 public class EMS extends Application {
-    String name,department,designation,phone,email;
+    String name,department,designation,phone,email,photoUrl;
     int leaves;
+    boolean isHr;
     @Override
     public void onCreate()
     {
         super.onCreate();
 
         FirebaseApp.initializeApp(this);
+        StateViewsBuilder
+                .init(this)
+                .setIconColor(Color.parseColor("#D2D5DA"))
+                .addState("error",
+                        "No Connection",
+                        "Error retrieving information from server.",
+                        AppCompatResources.getDrawable(this, R.drawable.ic_server_error),
+                        "Retry"
+                )
 
+
+
+                .addState("search",
+                        "No Day-Off Data Found",
+                        "Unfortunately I could not find any day-off request.",
+                        AppCompatResources.getDrawable(this, R.drawable.search), null)
+
+
+                .setButtonBackgroundColor(Color.parseColor("#317DED"))
+                .setButtonTextColor(Color.parseColor("#FFFFFF"))
+                .setIconSize(getResources().getDimensionPixelSize(R.dimen.state_views_icon_size));
+    }
+
+
+
+    public void setIsHr(boolean hr) {
+        isHr = hr;
+    }
+
+    public boolean getIsHr() {
+        return isHr;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
     public void setPhone(String phone) {
@@ -63,4 +107,5 @@ public class EMS extends Application {
     public String getName() {
         return name;
     }
+
 }

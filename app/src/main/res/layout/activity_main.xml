@@ -25,6 +25,12 @@
             android:layout_margin="50dp"
             android:layout_marginTop="50dp"
             android:elevation="100sp">
+            <io.armcha.elasticview.ElasticView
+                app:flexibility="10"
+                android:elevation="100dp"
+                app:cardCornerRadius="@dimen/text_20sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -38,14 +44,6 @@
         android:src="@drawable/placeholder"
         />
 
-    <!--
-     app:civ_shadow_gravity="center"
-        app:civ_border_color="@color/colorAccent"
-        app:civ_border_width="2dp"
-        app:civ_shadow="true"
-        app:civ_shadow_radius="10"
-        app:civ_shadow_color="@color/colorPrimary"
-    -->
 <TextView
     android:id="@+id/name"
     android:textSize="18sp"
@@ -82,10 +80,22 @@
 
 
 </RelativeLayout>
-
+            </io.armcha.elasticview.ElasticView>
         </com.google.android.material.card.MaterialCardView>
     </RelativeLayout>
-
+    <com.google.android.material.button.MaterialButton
+        android:textColor="#ffffff"
+        android:elevation="80dp"
+        app:cornerRadius="@dimen/text_20sp"
+        android:backgroundTint="#ff6416"
+        android:textSize="12sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:id="@+id/approveLeave"
+        android:layout_height="80dp"
+        app:rippleColor="@color/colorPrimaryDark"
+        app:icon="@drawable/approve_leave"
+        android:text="@string/home_option_six" />
     <LinearLayout
         android:gravity="center_horizontal"
         android:id="@+id/firstRow"
@@ -102,6 +112,7 @@
             android:textColor="#ffffff"
             app:cornerRadius="@dimen/text_20sp"
             android:elevation="80dp"
+            android:layout_gravity="center_vertical"
             app:rippleColor="@color/colorPrimaryDark"
             android:backgroundTint="#ff6416"
             android:textSize="12sp"
@@ -177,19 +188,7 @@
 
 
 
-        <com.google.android.material.button.MaterialButton
-            android:textColor="#ffffff"
-            android:elevation="80dp"
-            app:cornerRadius="@dimen/text_20sp"
-            android:backgroundTint="#ff6416"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="150dp"
-            android:id="@+id/approveLeave"
-            android:layout_height="80dp"
-            app:rippleColor="@color/colorPrimaryDark"
-            app:icon="@drawable/approve_leave"
-            android:text="@string/home_option_six" />
+
         <com.google.android.material.button.MaterialButton
             android:textColor="#ffffff"
             android:elevation="80dp"
@@ -197,7 +196,7 @@
             android:backgroundTint="#ff6416"
             android:textSize="12sp"
             android:layout_marginStart="10dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="start"
             android:layout_width="150dp"
             android:id="@+id/logOut"
             android:layout_height="80dp"
