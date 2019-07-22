@@ -9,17 +9,13 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,14 +25,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.llollox.androidprojects.compoundbuttongroup.CompoundButtonGroup;
 import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.ViewDialog;
 import com.teamwaveassignment.ems.models.Employee;
 
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -98,6 +95,7 @@ public class UserData extends AppCompatActivity {
 
         email=currentUser.getEmail();
 
+
         checkUser();
 
 
@@ -115,7 +113,13 @@ public class UserData extends AppCompatActivity {
                     textInputLayoutTwo.setVisibility(View.INVISIBLE);
                 }
 
-                if (s.length() > 0) {
+                if (s.length() > 1) {
+                    textInputLayout.setErrorEnabled(true);
+                    textInputLayout.setError("Valid Number required");
+                    textInputLayoutTwo.setVisibility(View.INVISIBLE);
+                }
+
+                if (s.length() == 10) {
                     textInputLayout.setError(null);
                     textInputLayout.setErrorEnabled(false);
                     textInputLayoutTwo.setVisibility(View.VISIBLE);
@@ -161,7 +165,16 @@ public class UserData extends AppCompatActivity {
         compoundButtonGroup.setOnButtonSelectedListener(new CompoundButtonGroup.OnButtonSelectedListener() {
             @Override
             public void onButtonSelected(int position, String value, boolean isChecked) {
-                if(value.equals("HR")){isHr=true;}
+                System.out.println(value + " " + position);
+                if (value.equals("HR")) {
+                    isHr = true;
+                    FirebaseMessaging.getInstance().subscribeToTopic("HR");
+
+                }
+                if (!value.equals("HR")) {
+                    isHr = false;
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("HR");
+                }
                 save.setVisibility(View.VISIBLE);
                 department=value;
 
@@ -187,7 +200,25 @@ public class UserData extends AppCompatActivity {
                 ems.setPhone(phone);
                 ems.setLeaves(12);
                 ems.setEmail(email);
-           //     ems.setIsHr(isHr);
+                ems.setIsHr(isHr);
+                ems.setPhotoUrl("");
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (!task.isSuccessful()) {
+
+                                    return;
+                                }
+
+                                // Get new Instance ID token
+                                String token = task.getResult().getToken();
+                                db.collection("employees")
+                                        .document(ems.getEmail())
+                                        .update("token", token);
+
+                            }
+                        });
                 Employee employee=new
                         Employee(id,"",name,email,phone,department,post,12,isHr);
                 db.collection("employees").document(email).set(employee)
@@ -251,6 +282,7 @@ public class UserData extends AppCompatActivity {
                         ems.setLeaves(document.getLong("leaves").intValue());
                         ems.setEmail(document.getString("email"));
                         ems.setIsHr(document.getBoolean("isHr"));
+                        ems.setPhotoUrl(document.getString("photoUrl"));
                         Intent loginIntent = new Intent(UserData.this,MainActivity.class);
                         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(loginIntent);

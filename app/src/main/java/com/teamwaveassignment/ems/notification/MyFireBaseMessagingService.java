@@ -14,8 +14,12 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
-import com.teamwaveassignment.ems.activities.MainActivity;
+import com.teamwaveassignment.ems.activities.ApproveLeave;
+import com.teamwaveassignment.ems.activities.LeaveHistory;
+
+import java.util.HashMap;
 
 public class MyFireBaseMessagingService extends FirebaseMessagingService {
 
@@ -27,49 +31,32 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     // [START receive_message]
+
+    EMS ems;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // [START_EXCLUDE]
-        // There are two types of messages data messages and notification messages. Data messages
-        // are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data
-        // messages are the type
-        // traditionally used with GCM. Notification messages are only received here in
-        // onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated
-        // notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages
-        // containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always
-        // sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-        // [END_EXCLUDE]
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+
+        ems = (EMS) getApplicationContext();
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-
-            } else {
-                // Handle message within 10 seconds
-
-            }
+            HashMap<String, String> map = new HashMap<>(remoteMessage.getData());
+            sendNotification(map.get("message"), map.get("title"));
 
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
+            sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
+
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+
     }
     // [END receive_message]
 
@@ -85,21 +72,9 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
 
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
+
         sendRegistrationToServer(token);
     }
-    // [END on_new_token]
-
-    /**
-     * Schedule async work using WorkManager.
-     */
-
-
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
 
     /**
      * Persist token to third-party servers.
@@ -111,6 +86,8 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+
+
     }
 
     /**
@@ -118,8 +95,15 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void sendNotification(String messageBody, String title) {
+        String notificationClass;
+        Intent intent;
+        if (ems.getIsHr()) {
+            intent = new Intent(this, ApproveLeave.class);
+
+        } else {
+            intent = new Intent(this, LeaveHistory.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -129,9 +113,11 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.pending)
-                        .setContentTitle(getString(R.string.pending))
+                        .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
+                        .setPriority(NotificationManager.IMPORTANCE_MAX)
+                        .setFullScreenIntent(pendingIntent, true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
 
@@ -147,5 +133,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+
+
     }
 }

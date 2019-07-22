@@ -8,8 +8,8 @@
     android:layout_height="match_parent">
 
     <in.codeshuffle.typewriterview.TypeWriterView
-        android:layout_marginTop="40sp"
-        android:layout_margin="20sp"
+
+        android:layout_margin="10sp"
         android:id="@+id/typeWriterView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,6 @@
         android:layout_width="match_parent"
         android:id="@+id/textInputLayout"
         android:layout_margin="10dp"
-        android:layout_marginTop="10dp"
         android:textColorHint="@color/textGrey"
         app:boxStrokeColor="@color/colorAccent"
         app:boxStrokeWidth="2dp"
@@ -41,7 +40,6 @@
         android:layout_width="match_parent"
         android:id="@+id/textInputLayoutTwo"
         android:layout_margin="10dp"
-        android:layout_marginTop="10dp"
         android:textColorHint="@color/textGrey"
         app:boxStrokeColor="@color/colorAccent"
         app:boxStrokeWidth="2dp"
@@ -59,7 +57,6 @@
 <androidx.cardview.widget.CardView
     android:id="@+id/departments"
     app:cardCornerRadius="@dimen/text_20sp"
-    android:layout_margin="30dp"
     android:elevation="100dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

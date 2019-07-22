@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,10 +36,18 @@ import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.ViewDialog;
 import com.teamwaveassignment.ems.models.Leave;
+import com.teamwaveassignment.ems.notification.QueueSingleton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +66,16 @@ public class ApproveLeave extends AppCompatActivity {
     Activity activity;
 
     ViewDialog viewDialog;
+
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAAIOZ11Ec:APA91bFZr6k5fdXATX6ahsTTAJKcEfILa5tnwqKU9YMLYlcckJr6JGsDo2XYMTVOuhrez_K-UJ-2KixnxPz47Vf9d2mTnqx4-yF7WXWTLOMOzI59cklIY9VRx612Ojk5tSooQNg7KUVG";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String applicant_token;
 
     EMS ems;
     @BindView(R.id.leaveHistory)
@@ -101,11 +124,11 @@ public class ApproveLeave extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull LeaveHolder viewHolder, int i,@NonNull final Leave model) {
 
 
-              /*  if(model.getEmail().equals(ems.getEmail()))
+                if (model.getEmail().equals(ems.getEmail()))
                 {
                     viewHolder.itemView.setVisibility(View.INVISIBLE);
                     viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
-                }*/
+                }
                 viewHolder.name.setText(model.getName());
                 viewHolder.designation.setText(model.getDesignation());
                 viewHolder.department.setText(model.getDepartment());
@@ -141,12 +164,36 @@ public class ApproveLeave extends AppCompatActivity {
                                         int leaveBalance;
                                         String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z", Locale.getDefault()).format(new Date());
                                         if (document.exists()) {
+
                                             leaveBalance=document.getDouble("leaves").intValue();
-                                             if(leaveBalance>=noOfDays)
+                                            applicant_token = document.getString("token");
+                                            String[] array = {applicant_token};
+                                            if (leaveBalance >= noOfDays)
                                              {
 
+
                                                int finalBalance=leaveBalance-noOfDays;
-                                               db.collection("employees").document(model.getEmail()).collection("myLeaves")
+                                                 //topic must match with what the receiver subscribed to
+                                                 NOTIFICATION_TITLE = "Day-Off Request Approved";
+                                                 NOTIFICATION_MESSAGE = "Your request has been approved by " + ems.getName() + ". On " + date
+                                                         + ". Your closing leave balance " + finalBalance + " Day";
+                                                 JSONObject notification = new JSONObject();
+                                                 JSONObject notificationBody = new JSONObject();
+
+                                                 try {
+                                                     notificationBody.put("title", NOTIFICATION_TITLE);
+                                                     notificationBody.put("message", NOTIFICATION_MESSAGE);
+
+                                                     notification.put("registration_ids", new JSONArray(Arrays.asList(array)));
+                                                     notification.put("data", notificationBody);
+
+                                                 } catch (JSONException e) {
+                                                     Log.e(TAG, "onCreate: " + e.getMessage());
+                                                 }
+                                                 sendNotification(notification);
+
+
+                                                 db.collection("employees").document(model.getEmail()).collection("myLeaves")
                                                    .document(model.getID()).update("approvedBy","Approved By "+ems.getName()+" on "+date
                                                         );
                                                  db.collection("employees").document(model.getEmail())
@@ -184,16 +231,51 @@ public class ApproveLeave extends AppCompatActivity {
                     public void onClick(View view) {
                         viewDialog=new ViewDialog(activity);
                         viewDialog.showDialog();
-                        String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z", Locale.getDefault()).format(new Date());
-                        db.collection("employees").document(model.getEmail()).collection("myLeaves")
-                                .document(model.getID()).update("approvedBy","Rejected By "+ems.getName()+" on "+date
-                        );
                         db.collection("employees").document(model.getEmail())
-                                .collection("myLeaves")
-                                .document(model.getID())
-                                .update("status",-1);
-                        db.collection("leaves").document(model.getID()).delete();
-                        viewDialog.hideDialog();
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        DocumentSnapshot document = task.getResult();
+                                        int leaveBalance;
+                                        String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z", Locale.getDefault()).format(new Date());
+                                        if (document.exists()) {
+
+                                            applicant_token = document.getString("token");
+                                            String[] array = {applicant_token};
+
+                                            NOTIFICATION_TITLE = "Day-Off Request Rejected";
+                                            NOTIFICATION_MESSAGE = "Your request for Day-Off has been rejected by " + ems.getName() + ". On " + date
+                                                    + " Please contact the concerned HR for further assistance.";
+                                            JSONObject notification = new JSONObject();
+                                            JSONObject notificationBody = new JSONObject();
+
+                                            try {
+                                                notificationBody.put("title", NOTIFICATION_TITLE);
+                                                notificationBody.put("message", NOTIFICATION_MESSAGE);
+
+                                                notification.put("registration_ids", new JSONArray(Arrays.asList(array)));
+                                                notification.put("data", notificationBody);
+
+                                            } catch (JSONException e) {
+                                                Log.e(TAG, "onCreate: " + e.getMessage());
+                                            }
+                                            sendNotification(notification);
+                                            db.collection("employees").document(model.getEmail()).collection("myLeaves")
+                                                    .document(model.getID()).update("approvedBy", "Rejected By " + ems.getName() + " on " + date
+                                            );
+                                            db.collection("employees").document(model.getEmail())
+                                                    .collection("myLeaves")
+                                                    .document(model.getID())
+                                                    .update("status", -1);
+                                            db.collection("leaves").document(model.getID()).delete();
+                                            viewDialog.hideDialog();
+                                        }
+                                    }
+                                });
+
+
+
                     }
                 });
             }
@@ -243,7 +325,32 @@ public class ApproveLeave extends AppCompatActivity {
     }
 
 
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ApproveLeave.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        QueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+    }
 
 
 

@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.button.MaterialButton;
@@ -30,7 +29,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firestore.v1.StructuredQuery;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -41,10 +39,7 @@ import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.ViewDialog;
 import com.teamwaveassignment.ems.models.Employee;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 public class EmployeeList extends AppCompatActivity {
@@ -165,7 +160,9 @@ public class EmployeeList extends AppCompatActivity {
                 viewHolder.name.setText(model.getName());
                 viewHolder.department.setText(model.getDepartment());
                 viewHolder.designation.setText(model.getDesignation());
-                viewHolder.profilePhoto.setImageResource(R.drawable.me);
+                Glide.with(getBaseContext())
+                        .load(model.getPhotoUrl()).placeholder(R.drawable.placeholder).into(viewHolder.profilePhoto);
+
                 viewHolder.call.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

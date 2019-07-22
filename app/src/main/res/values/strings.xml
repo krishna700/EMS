@@ -49,6 +49,7 @@
     <string name="rejected">Rejected</string>
     <string name="approved">Approved</string>
     <string name="pending">Pending</string>
+    <string name="pendingDayOff">New Pending Day-off request</string>
     <string name="appliedBy">Applied By:</string>
     <string name="reason">Reason of Leave</string>
 

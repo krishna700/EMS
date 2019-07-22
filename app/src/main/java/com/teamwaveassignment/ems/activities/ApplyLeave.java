@@ -2,7 +2,6 @@ package com.teamwaveassignment.ems.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,19 +12,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.models.Leave;
+import com.teamwaveassignment.ems.notification.QueueSingleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -33,6 +39,8 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import github.ishaan.buttonprogressbar.ButtonProgressBar;
 import ru.slybeaver.slycalendarview.SlyCalendarDialog;
+
+//import com.google.firebase.messaging.Message;
 
 public class ApplyLeave extends AppCompatActivity {
 
@@ -62,6 +70,16 @@ public class ApplyLeave extends AppCompatActivity {
 
 
     FirebaseFirestore db;
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key=" + "AAAAIOZ11Ec:APA91bFZr6k5fdXATX6ahsTTAJKcEfILa5tnwqKU9YMLYlcckJr6JGsDo2XYMTVOuhrez_K-UJ-2KixnxPz47Vf9d2mTnqx4-yF7WXWTLOMOzI59cklIY9VRx612Ojk5tSooQNg7KUVG";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +95,7 @@ public class ApplyLeave extends AppCompatActivity {
         noOfDays.setVisibility(View.INVISIBLE);
 
 
-        final ButtonProgressBar save = (ButtonProgressBar) findViewById(R.id.bpb_main);
+        final ButtonProgressBar save = findViewById(R.id.bpb_main);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +107,22 @@ public class ApplyLeave extends AppCompatActivity {
                     final int random = new Random().nextInt(100) + 10;
                     final int randomOne = new Random().nextInt(10000) + 100;
                     String id=""+random+randomOne;
+                    TOPIC = "/topics/HR"; //topic must match with what the receiver subscribed to
+                    NOTIFICATION_TITLE = "New Day-Off request";
+                    NOTIFICATION_MESSAGE = "Day-Off request from " + ems.getName() + ", " +
+                            "Department-" + ems.getDepartment() + " for " + noOfDaysInt + " day.";
+                    JSONObject notification = new JSONObject();
+                    JSONObject notificationBody = new JSONObject();
+                    try {
+                        notificationBody.put("title", NOTIFICATION_TITLE);
+                        notificationBody.put("message", NOTIFICATION_MESSAGE);
+
+                        notification.put("to", TOPIC);
+                        notification.put("data", notificationBody);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "onCreate: " + e.getMessage());
+                    }
+                    sendNotification(notification);
                     int status=0;
                     Leave leave=new Leave(id,approvedBy,reasonString,endDateString,firstDateString
                     ,date,ems.getName(),ems.getDesignation(),ems.getDepartment(),ems.getEmail(),ems.getPhone(),noOfDaysInt,status);
@@ -217,16 +251,30 @@ public class ApplyLeave extends AppCompatActivity {
 
     }
 
-    private void sendNotification() {
-        String topic = "highScores";
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
 
-// See documentation on defining a message payload.
-
-
-// Send a message to the devices subscribed to the provided topic.
-       // String response = FirebaseMessaging.getInstance().send("");
-
-
-
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ApplyLeave.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        QueueSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 }
