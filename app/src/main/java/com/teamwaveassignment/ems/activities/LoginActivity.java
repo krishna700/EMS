@@ -2,7 +2,6 @@ package com.teamwaveassignment.ems.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +16,14 @@ import com.teamwaveassignment.ems.R;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * LoginActivity for Users.
+ * Implemented using FireBaseUI And FireBaseAuth.
+ * Checking for previous login if found UserData Activity fires else the login intent is fired.
+ * Finally the listener listens to a change in AuthState and fires the next activity.
+ */
 public class LoginActivity extends AppCompatActivity {
-
+    //FireBase imports
     FirebaseAuth mAuth;
     List<AuthUI.IdpConfig> providers;
     final int RC_SIGN_IN=12;
@@ -30,13 +35,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         mAuth=FirebaseAuth.getInstance();
+        //Current FireBase user.
         currentUser =mAuth.getCurrentUser();
+        //List of providers for authentication
         providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build()
         );
         checkUser();
 
-
+//Listener for authentication changes
         FirebaseAuth.AuthStateListener firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
@@ -64,9 +71,6 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                Toast.makeText(LoginActivity.this,""+currentUser.getDisplayName(),
-                        Toast.LENGTH_LONG).show();
-
             } else {
 
             }
@@ -74,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
+    //Method to check for previous login
     private void checkUser()
     {
         if(currentUser != null) {

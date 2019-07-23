@@ -9,6 +9,12 @@ import com.google.firebase.FirebaseApp;
 
 import sakout.mehdi.StateViews.StateViewsBuilder;
 
+/**
+ * Base Application class available for whole application lifecycle.
+ * Initialize the StateViewsBuilder for showing different types of states in an activity.
+ * Initialize the FireBaseApp and some global fields required throughout the application.
+ * Getter and setter methods for the Global variables.
+ */
 public class EMS extends Application {
     String name,department,designation,phone,email,photoUrl;
     int leaves;
@@ -22,6 +28,8 @@ public class EMS extends Application {
         StateViewsBuilder
                 .init(this)
                 .setIconColor(Color.parseColor("#D2D5DA"))
+                //Error state in case of no connection
+                //Not used, logic for checking the connection is not implemented
                 .addState("error",
                         "No Connection",
                         "Error retrieving information from server.",
@@ -30,7 +38,8 @@ public class EMS extends Application {
                 )
 
 
-
+                //Error state in case of no data found.
+                //Used in LeaveHistory and ApproveLeave activities.
                 .addState("search",
                         "No Day-Off Data Found",
                         "Unfortunately I could not find any day-off request.",

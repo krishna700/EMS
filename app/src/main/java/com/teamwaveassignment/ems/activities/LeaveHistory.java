@@ -1,7 +1,6 @@
 package com.teamwaveassignment.ems.activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,15 +21,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.teamwaveassignment.ems.EMS;
 import com.teamwaveassignment.ems.R;
-import com.teamwaveassignment.ems.models.Employee;
 import com.teamwaveassignment.ems.models.Leave;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sakout.mehdi.StateViews.StateView;
 
+/**
+ * LeaveHistory class to show user's day-off request history, with a real-time status view.
+ */
 public class LeaveHistory extends AppCompatActivity {
 
+    //FireBase imports
     private FirebaseFirestore db;
     DocumentReference rRef,iRef;
     private FirestoreRecyclerAdapter adapter;
@@ -45,6 +46,7 @@ public class LeaveHistory extends AppCompatActivity {
 
     @BindView(R.id.leaveHistory)
     RecyclerView recyclerView;
+    //Handles empty state view, shows an error message
     @BindView(R.id.stateful)
     StateView mStatusPage;
 
@@ -56,12 +58,14 @@ public class LeaveHistory extends AppCompatActivity {
         setContentView(R.layout.activity_leave_history);
         getSupportActionBar().hide();
         ButterKnife.bind(this);
+        //Display Loading status
         mStatusPage.displayLoadingState();
 
         db=FirebaseFirestore.getInstance();
         mAuth=FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
         ems=(EMS) getApplicationContext();
+        //set the query
         query = db.collection("employees").document(ems.getEmail()).collection("myLeaves")
                 .orderBy("timeStamp", Query.Direction.ASCENDING);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -85,21 +89,26 @@ public class LeaveHistory extends AppCompatActivity {
             @Override
             public void onDataChanged() {
                 super.onDataChanged();
+                //get item count in the collection
                 int i=getItemCount();
+                //more than one item hides the loading state
                 if(i>0) mStatusPage.hideStates();
+                    //shows the error message with tag search defined in the manifest
                 else  mStatusPage.displayState("search");
             }
 
             @Override
             protected void onBindViewHolder(@NonNull LeaveHolder viewHolder, int i, final Leave model) {
 
-
+                //setting data field values
                 viewHolder.approvedBy.setText(model.getApprovedBy());
                 viewHolder.reason.setText(model.getReason());
                 viewHolder.startDate.setText(model.getStartDate());
                 viewHolder.endDate.setText(model.getEndDate());
                 viewHolder.timeStamp.setText(model.getTimeStamp());
                 viewHolder.dayCount.setText(model.getNoOfDays()+" Days");
+                //Checking the status which is updated realtime
+                //Changing the statusText and backGround color accordingly
                 if(model.getStatus()==0)
                 {
                     viewHolder.status.setText(getString(R.string.pending));
@@ -130,7 +139,7 @@ public class LeaveHistory extends AppCompatActivity {
 
     }
 
-
+    //LeaveHolder class for RecyclerView adapter and binding of views
      class LeaveHolder extends RecyclerView.ViewHolder
     {
         @BindView(R.id.approvedBy)
@@ -156,6 +165,8 @@ public class LeaveHistory extends AppCompatActivity {
 
 
     }
+
+    //Start and stop listening to the database on activity start and stop
     @Override
     protected void onStart() {
         super.onStart();

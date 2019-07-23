@@ -1,5 +1,8 @@
 package com.teamwaveassignment.ems.models;
 
+/**
+ * Leave POJO class with setters and getters.
+ */
 public class Leave {
   private   String ID,approvedBy,reason,endDate,startDate,timeStamp,designation,
     department,email,name,phone;

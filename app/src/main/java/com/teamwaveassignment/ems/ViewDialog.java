@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+/**
+ * Custom class for DialogBox with a GIF using Glide Image loading library.
+ */
 public class ViewDialog {
     Activity activity;
     Dialog dialog;

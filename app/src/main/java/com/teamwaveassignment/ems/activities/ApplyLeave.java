@@ -40,8 +40,12 @@ import es.dmoral.toasty.Toasty;
 import github.ishaan.buttonprogressbar.ButtonProgressBar;
 import ru.slybeaver.slycalendarview.SlyCalendarDialog;
 
-//import com.google.firebase.messaging.Message;
-
+/**
+ * ApplyLeave class is responsible for the Day-off application process
+ * Starts with date range picker, validates the date and calculates the noOfDays
+ * excluding saturday and sunday, compares current balance if valid send notification
+ * to the topic "HR" and save the data
+ */
 public class ApplyLeave extends AppCompatActivity {
 
 
@@ -68,14 +72,19 @@ public class ApplyLeave extends AppCompatActivity {
             ,reasonString;
     int balance,noOfDaysInt;
 
-
+    //FireBase import
     FirebaseFirestore db;
+
+    //Notification URL, serverKey and other notification data
+    //This is usually a bad practice for peer to peer upstream message without server.
+    //This exposes the serverKey to the clientSide which can cause exploitation
+    //Usually this can be implemented using any serverSide technology or FireBase cloud function
 
     final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
     final private String serverKey = "key=" + "AAAAIOZ11Ec:APA91bFZr6k5fdXATX6ahsTTAJKcEfILa5tnwqKU9YMLYlcckJr6JGsDo2XYMTVOuhrez_K-UJ-2KixnxPz47Vf9d2mTnqx4-yF7WXWTLOMOzI59cklIY9VRx612Ojk5tSooQNg7KUVG";
     final private String contentType = "application/json";
     final String TAG = "NOTIFICATION TAG";
-
+    //Notification data variables
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
     String TOPIC;
@@ -96,13 +105,17 @@ public class ApplyLeave extends AppCompatActivity {
 
 
         final ButtonProgressBar save = findViewById(R.id.bpb_main);
+        //On save button click
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reasonString=reason.getText().toString();
+                //Checks the Day-Off reason for empty string
                 if(!reasonString.equals(""))
                 {
+                    //Start button animation
                     save.startLoader();
+                    //timeStamp string
                     String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z", Locale.getDefault()).format(new Date());
                     final int random = new Random().nextInt(100) + 10;
                     final int randomOne = new Random().nextInt(10000) + 100;
@@ -134,6 +147,7 @@ public class ApplyLeave extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                       save.stopLoader();
+                                    //Handler thread to show the animation and finish the activity with success toast
 
                                     final int splash_length = 500;
                                     new Handler().postDelayed(
@@ -152,6 +166,7 @@ public class ApplyLeave extends AppCompatActivity {
                                 }
                             });
                 }
+                //DayOff string is empty
                 else
                 {
                    reason.setError("Oops! Empty");
@@ -162,29 +177,30 @@ public class ApplyLeave extends AppCompatActivity {
 
             }
         });
-
+        //Callback for date range picker
         SlyCalendarDialog.Callback callback = new SlyCalendarDialog.Callback() {
+            //On cancel button pressed
             @Override
             public void onCancelled() {
                 Toasty.info(ApplyLeave.this, "Please select date range", Toast.LENGTH_SHORT, true).show();
             }
 
+            //On dateSelected two Calendar objects firstDate and secondDate
             @Override
             public void onDataSelected(Calendar firstDate, Calendar secondDate, int hours, int minutes) {
 
-
+                //SecondDate is null when only one date is selected
                 if(secondDate==null) secondDate=firstDate;
+                //Converting the dates to string and showing in the views
                 Date first=firstDate.getTime();
                 Date second=secondDate.getTime();
                 Date currentDate=Calendar.getInstance().getTime();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
                 firstDateString = dateFormat.format(firstDate.getTime());
                 endDateString=dateFormat.format(secondDate.getTime());
-
                 startDate.setText(firstDateString);
                 endDate.setText(endDateString);
-
+                //Checking for previous date by comparing with current date object
                 if(first.before(currentDate)){
                     Toasty.error(ApplyLeave.this, "Select an upcoming date", Toast.LENGTH_SHORT, true).show();
                     reason.setVisibility(View.INVISIBLE);
@@ -192,9 +208,12 @@ public class ApplyLeave extends AppCompatActivity {
                     noOfDays.setVisibility(View.INVISIBLE);
                     leaveCount.setText("");
                 }
+                //The date is valid, process the request
                else
                 {
+                    //Counter to hold noOfDays in the request
                     int numberOfDays = 0;
+                    //Looping from the first date to last date to increment the counter while the day is not sunday or saturday
                     while (firstDate.before(secondDate)) {
                         if ((Calendar.SATURDAY != firstDate.get(Calendar.DAY_OF_WEEK))
                                 &&(Calendar.SUNDAY != firstDate.get(Calendar.DAY_OF_WEEK))) {
@@ -203,11 +222,14 @@ public class ApplyLeave extends AppCompatActivity {
                         }
                         firstDate.add(Calendar.DATE,1);
                     }
+                    //The while loop leaves the last day unchecked, when the two date is equal and
+                    //the day is a working day then add one to the counter
                     if(firstDate.equals(secondDate) &&( (Calendar.SATURDAY != firstDate.get(Calendar.DAY_OF_WEEK))
                             &&(Calendar.SUNDAY != firstDate.get(Calendar.DAY_OF_WEEK))))
                     {
                         numberOfDays+=1;
                     }
+                    //Checks the leaveBalance, shows the save button and reasonEditText
                     if(balance>=numberOfDays)
                     {
                         leaveCount.setText(""+numberOfDays);
@@ -216,6 +238,7 @@ public class ApplyLeave extends AppCompatActivity {
                        applyLayout.setVisibility(View.VISIBLE);
                        noOfDays.setVisibility(View.VISIBLE);
                     }
+                    //Not sufficient Leave Balance
                     else
                     {
                         reason.setVisibility(View.INVISIBLE);
@@ -232,12 +255,12 @@ public class ApplyLeave extends AppCompatActivity {
 
             }
         };
-
+        //Firing the dateRangePicker on activity create
         new SlyCalendarDialog()
                 .setSingle(false)
                 .setCallback(callback)
                 .show(getSupportFragmentManager(), "TAG_SLYCALENDAR");
-
+        //Firing the dateRangePicker on button click
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -251,6 +274,7 @@ public class ApplyLeave extends AppCompatActivity {
 
     }
 
+    //Send the notification to the server using QueueSingleton
     private void sendNotification(JSONObject notification) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new Response.Listener<JSONObject>() {

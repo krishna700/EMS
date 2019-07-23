@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -34,14 +33,17 @@ import com.teamwaveassignment.ems.R;
 import com.teamwaveassignment.ems.ViewDialog;
 import com.teamwaveassignment.ems.models.Employee;
 
-import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.codeshuffle.typewriterview.TypeWriterView;
 
-
+/**
+ * UserData class is responsible handling user data, both uploading new user data and
+ * fetching old users data from the server.
+ * Finally the application level global variables using following setters.
+ */
 public class UserData extends AppCompatActivity {
 
 
@@ -65,11 +67,11 @@ public class UserData extends AppCompatActivity {
     StringBuilder nameString;
     String name,email,phone,post,department;
     boolean isHr=false;
+    //FireBase imports
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     private FirebaseFirestore db;
-    List<AuthUI.IdpConfig> providers;
-    final int RC_SIGN_IN=12;
+
     EMS ems;
     ViewDialog viewDialog;
     Activity activity;
@@ -95,10 +97,10 @@ public class UserData extends AppCompatActivity {
 
         email=currentUser.getEmail();
 
-
+        //Check for new user or existing user
         checkUser();
 
-
+        //EditText listeners for validation purpose
         number.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -132,9 +134,6 @@ public class UserData extends AppCompatActivity {
 
             }
         });
-
-
-
         designation.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -162,17 +161,25 @@ public class UserData extends AppCompatActivity {
 
             }
         });
+
+        //Group option for departments
         compoundButtonGroup.setOnButtonSelectedListener(new CompoundButtonGroup.OnButtonSelectedListener() {
             @Override
             public void onButtonSelected(int position, String value, boolean isChecked) {
                 System.out.println(value + " " + position);
+                //If user has selected the HR option
                 if (value.equals("HR")) {
+                    //global isHR true
                     isHr = true;
+                    //Subscribe to the HR topic to receive Day-off requests
                     FirebaseMessaging.getInstance().subscribeToTopic("HR");
 
                 }
+                //If user has selected any other option
                 if (!value.equals("HR")) {
+                    //global isHR false
                     isHr = false;
+                    //UnSubscribe to the HR topic to ignore HR notifications
                     FirebaseMessaging.getInstance().unsubscribeFromTopic("HR");
                 }
                 save.setVisibility(View.VISIBLE);
@@ -181,6 +188,7 @@ public class UserData extends AppCompatActivity {
             }
         });
 
+        //saving all the data in database
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,7 +219,8 @@ public class UserData extends AppCompatActivity {
                                     return;
                                 }
 
-                                // Get new Instance ID token
+                                // Get new Instance ID token for notification
+                                //and saving it into database for device-to-device notifications
                                 String token = task.getResult().getToken();
                                 db.collection("employees")
                                         .document(ems.getEmail())
@@ -219,6 +228,7 @@ public class UserData extends AppCompatActivity {
 
                             }
                         });
+                //Creating an Employee object using POJO class and pushing it into database
                 Employee employee=new
                         Employee(id,"",name,email,phone,department,post,12,isHr);
                 db.collection("employees").document(email).set(employee)
@@ -240,10 +250,9 @@ public class UserData extends AppCompatActivity {
 
 
 
+    //Method for newusers, taking data from users
     private void newUser()
     {
-
-
         nameString=new StringBuilder("Hey !  ");
         name=nameString.toString();
         typeWriterView.setDelay(100);
@@ -274,7 +283,9 @@ public class UserData extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+
                     if (document.exists()) {
+                        //User present in the database, initialize the global variables from database
                         ems.setName(document.getString("name"));
                         ems.setDepartment(document.getString("department"));
                         ems.setDesignation(document.getString("designation"));
@@ -290,6 +301,7 @@ public class UserData extends AppCompatActivity {
                         finish();
 
                     } else {
+                        //else hiding the viewDialog if present and calling the newUser method
                         if (viewDialog != null) { viewDialog.hideDialog(); viewDialog = null; }
                        newUser();
 
@@ -304,6 +316,7 @@ public class UserData extends AppCompatActivity {
     @Override public void onStop()
     {
         super.onStop();
+        //Removing the Dialog when activity stops to avoid memory leaks
         if (viewDialog != null) { viewDialog.hideDialog(); viewDialog = null; }
     }
 

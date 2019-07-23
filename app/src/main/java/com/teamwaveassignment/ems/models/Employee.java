@@ -1,5 +1,8 @@
 package com.teamwaveassignment.ems.models;
 
+/**
+ * Employee POJO class with setters and getters.
+ */
 public class Employee {
    private String id,name,email,phone,designation,department,photoUrl;
    private int leaves;

@@ -53,9 +53,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import sakout.mehdi.StateViews.StateView;
 
+/**
+ * ApproveLeave class handles the approval of day-off requests. And sends a peer-to-peer notification using
+ * the notification token
+ */
 public class ApproveLeave extends AppCompatActivity {
 
-
+    //FireBase imports
     private FirebaseFirestore db;
     DocumentReference rRef,iRef;
     private FirestoreRecyclerAdapter adapter;
@@ -67,12 +71,15 @@ public class ApproveLeave extends AppCompatActivity {
 
     ViewDialog viewDialog;
 
-
+    //Notification URL, serverKey and other notification data
+    //This is usually a bad practice for peer to peer upstream message without server.
+    //This exposes the serverKey to the clientSide which can cause exploitation
+    //Usually this can be implemented using any serverSide technology or FireBase cloud function
     final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
     final private String serverKey = "key=" + "AAAAIOZ11Ec:APA91bFZr6k5fdXATX6ahsTTAJKcEfILa5tnwqKU9YMLYlcckJr6JGsDo2XYMTVOuhrez_K-UJ-2KixnxPz47Vf9d2mTnqx4-yF7WXWTLOMOzI59cklIY9VRx612Ojk5tSooQNg7KUVG";
     final private String contentType = "application/json";
     final String TAG = "NOTIFICATION TAG";
-
+    //Notification data variables
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
     String applicant_token;
@@ -88,12 +95,14 @@ public class ApproveLeave extends AppCompatActivity {
         setContentView(R.layout.activity_approve_leave);
         getSupportActionBar().hide();
         ButterKnife.bind(this);
+        //Display the loadingState
         mStatusPage.displayLoadingState();
         activity=this;
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         ems = (EMS) getApplicationContext();
+        //Set query add layoutManager to recycler and finally set the adapter
         query = db.collection("leaves").orderBy("department", Query.Direction.ASCENDING);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -123,12 +132,13 @@ public class ApproveLeave extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull LeaveHolder viewHolder, int i,@NonNull final Leave model) {
 
-
+                //Hides user's leaveRequest
                 if (model.getEmail().equals(ems.getEmail()))
                 {
                     viewHolder.itemView.setVisibility(View.INVISIBLE);
                     viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
                 }
+                //sets the card field values
                 viewHolder.name.setText(model.getName());
                 viewHolder.designation.setText(model.getDesignation());
                 viewHolder.department.setText(model.getDepartment());
@@ -140,7 +150,7 @@ public class ApproveLeave extends AppCompatActivity {
                 viewHolder.call.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        //Fires the Action_DIAL implicit intent
                         Intent intent = new Intent(Intent.ACTION_DIAL);
                         String num = "+91" + model.getPhone();
                         intent.setData(Uri.parse("tel:" + num));
@@ -149,12 +159,15 @@ public class ApproveLeave extends AppCompatActivity {
                     }
                 });
 
-               final int noOfDays=model.getNoOfDays();
+                final int noOfDays = model.getNoOfDays();//Day-Off count
+                //Request accept listener
                 viewHolder.accept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //show the Dialog
                         viewDialog=new ViewDialog(activity);
                         viewDialog.showDialog();
+                        //Fetch the employee document and initialize the currentDayOff Balance and notification token
                         db.collection("employees").document(model.getEmail())
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -167,16 +180,19 @@ public class ApproveLeave extends AppCompatActivity {
 
                                             leaveBalance=document.getDouble("leaves").intValue();
                                             applicant_token = document.getString("token");
+                                            //Converting token string into an array
                                             String[] array = {applicant_token};
+                                            //Checking for sufficient balance
                                             if (leaveBalance >= noOfDays)
                                              {
 
-
+                                                 //Calculating the finalBalance
                                                int finalBalance=leaveBalance-noOfDays;
-                                                 //topic must match with what the receiver subscribed to
+                                                 //notification title and message using timeStamp and HR's name
                                                  NOTIFICATION_TITLE = "Day-Off Request Approved";
                                                  NOTIFICATION_MESSAGE = "Your request has been approved by " + ems.getName() + ". On " + date
                                                          + ". Your closing leave balance " + finalBalance + " Day";
+                                                 //JSON objects
                                                  JSONObject notification = new JSONObject();
                                                  JSONObject notificationBody = new JSONObject();
 
@@ -190,9 +206,10 @@ public class ApproveLeave extends AppCompatActivity {
                                                  } catch (JSONException e) {
                                                      Log.e(TAG, "onCreate: " + e.getMessage());
                                                  }
+                                                 //call the sendNotification method by passing the JSON object
                                                  sendNotification(notification);
 
-
+                                                 //Update the database with status, finalBalance and approvedBy text
                                                  db.collection("employees").document(model.getEmail()).collection("myLeaves")
                                                    .document(model.getID()).update("approvedBy","Approved By "+ems.getName()+" on "+date
                                                         );
@@ -207,12 +224,14 @@ public class ApproveLeave extends AppCompatActivity {
                                                              @Override
                                                              public void onComplete(@NonNull Task<Void> task) {
                                                                  viewDialog.hideDialog();
+                                                                 //Deleting from the collection
                                                                  db.collection("leaves").document(model.getID()).delete();
                                                              }
                                                          });
 
 
                                              }
+                                            //Not sufficient leave balance, hide the dialog and show toast
                                              else
                                              {
                                                  viewDialog.hideDialog();
@@ -225,7 +244,7 @@ public class ApproveLeave extends AppCompatActivity {
 
                     }
                 });
-
+                //Request reject listener
                 viewHolder.reject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -261,6 +280,7 @@ public class ApproveLeave extends AppCompatActivity {
                                                 Log.e(TAG, "onCreate: " + e.getMessage());
                                             }
                                             sendNotification(notification);
+
                                             db.collection("employees").document(model.getEmail()).collection("myLeaves")
                                                     .document(model.getID()).update("approvedBy", "Rejected By " + ems.getName() + " on " + date
                                             );
@@ -269,6 +289,7 @@ public class ApproveLeave extends AppCompatActivity {
                                                     .document(model.getID())
                                                     .update("status", -1);
                                             db.collection("leaves").document(model.getID()).delete();
+
                                             viewDialog.hideDialog();
                                         }
                                     }
@@ -286,7 +307,7 @@ public class ApproveLeave extends AppCompatActivity {
 
     }
 
-
+    //LeaveHolder class for RecyclerView adapter and binding of views
     class LeaveHolder extends RecyclerView.ViewHolder
     {
 
@@ -324,7 +345,7 @@ public class ApproveLeave extends AppCompatActivity {
 
     }
 
-
+    //Send the notification to the server using QueueSingleton
     private void sendNotification(JSONObject notification) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new Response.Listener<JSONObject>() {

@@ -31,7 +31,14 @@ import com.teamwaveassignment.ems.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * MainActivity class for homeScreen
+ * Showing the user data using application global variables.
+ * Control the main application flow
+ * Edit user information
+ */
 public class MainActivity extends AppCompatActivity {
+    //ButterKnife Injection for Views
     @BindView(R.id.profilePhoto)
     ImageView profilePhoto;
     @BindView(R.id.name)
@@ -54,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
     Button logOut;
     CircularImageView bottomProfilePhoto;
     EMS ems;
+    //BottomDialogSheet for edit profile
     DialogSheet dialogSheet;
     EditText bottomName, bottomDesignation, bottomPhone;
+    //Final variable for requestId
     static final int REQUEST_TAKE_PHOTO = 1;
+    //FireBaseStorage for uploading images
     FirebaseStorage firebaseStorage;
     private UploadTask uploadTask;
     private Uri uri = null;
-
-
     FirebaseFirestore db;
 
 
@@ -77,19 +85,20 @@ public class MainActivity extends AppCompatActivity {
         designation.setText(ems.getDesignation());
         department.setText(ems.getDepartment());
 
-
+        //Load the profilePhoto using Glide from imageUrl
         Glide.with(MainActivity.this)
                 .load(ems.getPhotoUrl()).placeholder(R.drawable.placeholder).into(profilePhoto);
 
 
         approveLeave.setVisibility(View.INVISIBLE);
+        //If HR show the ApproveDay-Off tile
         if(ems.getIsHr()) {
             approveLeave.setVisibility(View.VISIBLE);
 
         }
 
         firebaseStorage = FirebaseStorage.getInstance();
-
+        //Initialize the DialogSheet for editing user information and saving it in the database.
         dialogSheet = new DialogSheet(MainActivity.this)
                 .setTitle("Edit Profile")
                 .setColoredNavigationBar(true)
@@ -100,12 +109,16 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.save, new DialogSheet.OnPositiveClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //Onclick save button inside dialogsheet
+                        //Checking for null URI for image
+                        //If not null save the image in server and get the download Url and save the URL
                         if (uri != null)
                             sendDataToServer(uri);
                         String bottomNameText = bottomName.getText().toString();
                         String bottomDesignationText = bottomDesignation.getText().toString();
                         String bottomPhoneText = bottomPhone.getText().toString();
-
+                        //Check for changed user information by matching with application global variables
+                        //if different change the global value and save it to database
                         if (!bottomNameText.equals(ems.getName())) {
                             ems.setName(bottomNameText);
                             db.collection("employees").document(ems.getEmail())
@@ -125,12 +138,14 @@ public class MainActivity extends AppCompatActivity {
                             db.collection("employees").document(ems.getEmail())
                                     .update("phone", bottomPhoneText);
                         }
+                        //Finally setting the updated value in respective views
                         userName.setText(ems.getName());
                         designation.setText(ems.getDesignation());
                         dialogSheet.dismiss();
                     }
                 });
 
+        //Getting the bottomSheet inflated view and setting the field values
         dialogSheet.setView(R.layout.bottomsheet_profile);
         View inflatedView = dialogSheet.getInflatedView();
         bottomName = inflatedView.findViewById(R.id.bottomName);
@@ -142,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         bottomName.setText(ems.getName());
         bottomDesignation.setText(ems.getDesignation());
         bottomPhone.setText(ems.getPhone());
+        //listener on imageView to fire an Implicit intent for picking an image for profilePhoto
         bottomProfilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Listeners on different homeTiles to do the function or start an activity using explicit intent
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,13 +196,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,LeaveHistory.class));
             }
         });
+
+        approveLeave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ApproveLeave.class));
+            }
+        });
+
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //FireBaseUI method to SignOut the currentUser
+
                 AuthUI.getInstance()
                         .signOut(MainActivity.this)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             public void onComplete(@NonNull Task<Void> task) {
+                                //Prints GOODBYE and starts the LoginActivity by Finishing the current activity
                                 Toast.makeText(MainActivity.this,"GoodBye!!", Toast.LENGTH_SHORT).show();
                                 Intent intent=new Intent(MainActivity.this, LoginActivity.class);
                                 startActivity(intent);
@@ -196,12 +224,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        approveLeave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,ApproveLeave.class));
-            }
-        });
+
 
     }
 
@@ -210,7 +233,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
 
+        //Checking response for image picker and showing the image in respective views
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            //Initialize the global uri variable for uploading it to server
             uri = data.getData();
             Glide.with(MainActivity.this)
                     .load(uri).placeholder(R.drawable.placeholder).into(profilePhoto);
@@ -222,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //Method to fire the Image Implicit intent when the user clicks on the image in bottomSheet
     private void clickPhoto() {
 
         Intent intent = new Intent();
@@ -232,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Save the data into the server provided in the argument and get the download URL and save it to database
     private void sendDataToServer(Uri uri) {
         StorageReference storageRef = firebaseStorage.getReference();
 
@@ -255,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
+                    //Get the downloadUrl and update the user photoURL field in the database
                     Uri downloadUri = task.getResult();
                     db.collection("employees").document(ems.getEmail())
                             .update("photoUrl", downloadUri.toString());

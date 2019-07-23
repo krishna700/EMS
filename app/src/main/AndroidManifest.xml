@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.teamwaveassignment.ems">
+
+    <!--Permissions-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <!--Application Tag-->
     <application
         android:fullBackupContent="false"
         android:name=".EMS"
@@ -17,6 +19,7 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning"
         android:theme="@style/AppTheme">
+        <!--NotificationMetaData-->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/pending"/>
@@ -27,7 +30,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-
+        <!--Notification Service-->
         <service
             android:name="com.teamwaveassignment.ems.notification.MyFireBaseMessagingService"
             android:exported="false">
@@ -39,6 +42,7 @@
         <activity android:name=".activities.MainActivity">
 
         </activity>
+        <!--Launcher Activity-->
         <activity
             android:name=".activities.LoginActivity"
             android:noHistory="true">

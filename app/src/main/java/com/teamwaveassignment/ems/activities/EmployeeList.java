@@ -42,8 +42,13 @@ import com.teamwaveassignment.ems.models.Employee;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * EmployeeList Class to show all employees in a recycler view using
+ * FireBaseRecyclerAdapter. A filter option to filter employees on the basis of department
+ */
 public class EmployeeList extends AppCompatActivity {
 
+    //FireBase imports
     private FirebaseFirestore db;
     DocumentReference rRef,iRef;
     private FirestoreRecyclerAdapter adapter;
@@ -61,10 +66,11 @@ public class EmployeeList extends AppCompatActivity {
     PowerMenu powerMenu;
     Activity activity;
     EMS ems;
+    //Filter Menu click listener calls the addFilter method by passing item title
     private OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener = new OnMenuItemClickListener<PowerMenuItem>() {
         @Override
         public void onItemClick(int position, PowerMenuItem item) {
-           addFilter(item.getTitle());
+            addFilter(item.getTitle());
             department.setVisibility(View.VISIBLE);
             department.setText(item.getTitle());
             powerMenu.setSelectedPosition(position);
@@ -101,12 +107,12 @@ public class EmployeeList extends AppCompatActivity {
                                              powerMenu.setSelectedPosition(-1);
                                           }
                                       });
-
+//UI library to show different departments
                 powerMenu = new PowerMenu.Builder(EmployeeList.this)
                         .addItem(new PowerMenuItem("HR", false))
-                        .setAnimation(MenuAnimation.ELASTIC_TOP_RIGHT)
+                        .setAnimation(MenuAnimation.ELASTIC_TOP_RIGHT)//Animation
                         .setShowBackground(true)
-                        .setMenuRadius(10f)
+                        .setMenuRadius(10f) //sets the radius
                         .setMenuShadow(10f) // sets the shadow.
                         .setTextColor(getBaseContext().getResources().getColor(R.color.textBlack))
                         .setSelectedTextColor(getColor(R.color.textBlack))
@@ -114,13 +120,14 @@ public class EmployeeList extends AppCompatActivity {
                         .setSelectedMenuColor(getBaseContext().getResources().getColor(R.color.colorAccent))
                         .setOnMenuItemClickListener(onMenuItemClickListener)
                         .build();
+        //Adding all the department in the menu
         powerMenu.addItem(new PowerMenuItem("Development",false));
         powerMenu.addItem(new PowerMenuItem("IT services",false));
         powerMenu.addItem(new PowerMenuItem("Sales",false));
         powerMenu.addItem(new PowerMenuItem("Finance",false));
         powerMenu.addItem(new PowerMenuItem("QA",false));
 
-
+        //Showing the menu on filter floatingActionButton click
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +138,7 @@ public class EmployeeList extends AppCompatActivity {
 
     }
 
+    //Method to set employee list using the database query in the argument
     private void setEmployeeList(Query query)
     {
         FirestoreRecyclerOptions<Employee> employeeFireStoreRecyclerOptions =
@@ -141,6 +149,7 @@ public class EmployeeList extends AppCompatActivity {
             @NonNull
             @Override
             public EmployeeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                //Inflate the cardView and return it
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.employeelist_item, parent, false);
 
@@ -150,23 +159,24 @@ public class EmployeeList extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull EmployeeHolder viewHolder, int i, final Employee model) {
 
+                //Hiding the employee card of the currentUser
                 if(model.getEmail().equals(ems.getEmail()))
                 {
                     viewHolder.itemView.setVisibility(View.INVISIBLE);
                     viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
                 }
 
-
+                //Setting the field values
                 viewHolder.name.setText(model.getName());
                 viewHolder.department.setText(model.getDepartment());
                 viewHolder.designation.setText(model.getDesignation());
                 Glide.with(getBaseContext())
                         .load(model.getPhotoUrl()).placeholder(R.drawable.placeholder).into(viewHolder.profilePhoto);
-
+                //Listeners on three action button
                 viewHolder.call.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        //Fires the Action_DIAL implicit intent
                             Intent intent = new Intent(Intent.ACTION_DIAL);
                             String num = "+91" + model.getPhone();
                             intent.setData(Uri.parse("tel:" + num));
@@ -177,8 +187,10 @@ public class EmployeeList extends AppCompatActivity {
                 viewHolder.email.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //Fires the Action_SEND implicit intent
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("message/rfc822");
+                        //Setting the package of GMail
                         i.setPackage("com.google.android.gm");
                         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{model.getEmail()});
                         try {
@@ -191,18 +203,22 @@ public class EmployeeList extends AppCompatActivity {
                 viewHolder.whatsApp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //calling the whatsApp API by passing the activity
+                        // and respective employee number
                         whatsApp(activity,"+91"+model.getPhone());
                     }
                 });
             }
 
         };
+        //setting the adapter to the recyclerView and listen to changes
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
 
 
     }
 
+    //WhatsApp Api to launch whatsApp intent, takes activity and recipientNumber as argument
     @SuppressLint("NewApi")
     public  void whatsApp(Activity activity, String phone) {
 
@@ -220,20 +236,20 @@ public class EmployeeList extends AppCompatActivity {
         }
     }
 
-    private void addFilter(String department)
-    {
+    //Method to add filter on the employeeList, takes department string as argument
+    private void addFilter(String department) {
 
         adapter.stopListening();
 
-            query = db.collection("employees")
-                    .orderBy("name", Query.Direction.ASCENDING)
-                    .whereEqualTo("department",  department);
-            setEmployeeList(query);
+        query = db.collection("employees")
+                .orderBy("name", Query.Direction.ASCENDING)
+                .whereEqualTo("department",  department);
+        setEmployeeList(query);
 
-           adapter.startListening();
+        adapter.startListening();
     }
 
-
+    //EmployeeHolder class for RecyclerView adapter and binding of views
   public class EmployeeHolder extends RecyclerView.ViewHolder
   {
       @BindView(R.id.name)
@@ -260,6 +276,7 @@ public class EmployeeList extends AppCompatActivity {
       }
   }
 
+    //Start and stop listening to the database on activity start and stop
     @Override
     protected void onStart() {
         super.onStart();

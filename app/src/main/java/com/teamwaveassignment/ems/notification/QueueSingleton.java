@@ -6,6 +6,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * Queue class using Singleton builder pattern so that only one object is available throughout the context.
+ * Process the notification request using Volley.
+ */
 public class QueueSingleton {
 
     private static QueueSingleton instance;

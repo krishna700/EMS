@@ -98,10 +98,13 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String messageBody, String title) {
         String notificationClass;
         Intent intent;
+        //Opening the Approve activity for HRs on notification click
         if (ems.getIsHr()) {
             intent = new Intent(this, ApproveLeave.class);
 
-        } else {
+        }
+        //Opening the LeaveHistory activity for Non-HRs on notification click
+        else {
             intent = new Intent(this, LeaveHistory.class);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -110,6 +113,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        // Setting the notification methods for different behaviours
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.pending)
